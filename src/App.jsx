@@ -1,8 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -11,7 +9,6 @@ import Authors from "./pages/Authors";
 import Categories from "./pages/Categories";
 import BorrowBooks from "./pages/BorrowBooks";
 import NotFound from "./pages/NotFound";
-
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {
@@ -19,13 +16,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Navbar />
-
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
-          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -34,7 +27,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/books"
             element={
@@ -43,7 +35,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/authors"
             element={
@@ -52,7 +43,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/categories"
             element={
@@ -61,7 +51,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/borrow"
             element={
@@ -70,7 +59,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

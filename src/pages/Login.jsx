@@ -21,7 +21,6 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await login(form.username, form.password);
     } catch {
@@ -38,11 +37,9 @@ function Login() {
         <h1 className="text-3xl font-bold mb-6 text-center">
           Login
         </h1>
-
         {error && (
           <p className="text-red-600 mb-4">{error}</p>
         )}
-
         <input
           type="text"
           name="username"
@@ -51,7 +48,6 @@ function Login() {
           value={form.username}
           onChange={handleChange}
         />
-
         <input
           type="password"
           name="password"
@@ -60,13 +56,11 @@ function Login() {
           value={form.password}
           onChange={handleChange}
         />
-
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white w-full p-2 rounded"
         >
           Login
         </button>
-
         <p className="text-center mt-4">
           Don't have an account?{" "}
           <Link

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import {
   createCategory,
   updateCategory,
@@ -20,7 +19,6 @@ function CategoryForm({
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       if (category) {
         await updateCategory(category.id, {
@@ -31,7 +29,6 @@ function CategoryForm({
           name,
         });
       }
-
       onSuccess();
       onClose();
     } catch (err) {
@@ -42,18 +39,14 @@ function CategoryForm({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
-
       <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-
         <h2 className="text-2xl font-bold mb-4">
           {category ? "Edit Category" : "Add Category"}
         </h2>
-
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
         >
-
           <input
             type="text"
             placeholder="Category Name"
@@ -64,16 +57,13 @@ function CategoryForm({
             }
             required
           />
-
           <div className="flex gap-3">
-
             <button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
             >
               Save
             </button>
-
             <button
               type="button"
               onClick={onClose}
@@ -81,13 +71,9 @@ function CategoryForm({
             >
               Cancel
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 }

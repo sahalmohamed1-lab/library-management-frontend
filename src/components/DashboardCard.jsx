@@ -4,7 +4,6 @@ function DashboardCard({ title, value }) {
       <h2 className="text-gray-500 text-sm uppercase">
         {title}
       </h2>
-
       <p className="text-4xl font-bold mt-2">
         {value}
       </p>

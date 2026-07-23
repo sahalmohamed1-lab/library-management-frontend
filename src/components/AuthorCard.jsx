@@ -4,7 +4,6 @@ function AuthorCard({ author, onEdit, onDelete, isAdmin }) {
       <div>
         <h2 className="text-lg font-semibold">{author.name}</h2>
       </div>
-
       {isAdmin && (
         <div className="flex gap-2">
           <button
@@ -13,7 +12,6 @@ function AuthorCard({ author, onEdit, onDelete, isAdmin }) {
           >
             Edit
           </button>
-
           <button
             onClick={() => onDelete(author.id)}
             className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"

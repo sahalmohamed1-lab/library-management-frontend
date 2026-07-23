@@ -15,14 +15,12 @@ function AuthorForm({ author, onClose, onSuccess }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       if (author) {
         await updateAuthor(author.id, { name });
       } else {
         await createAuthor({ name });
       }
-
       onSuccess();
       onClose();
     } catch (err) {
@@ -37,7 +35,6 @@ function AuthorForm({ author, onClose, onSuccess }) {
         <h2 className="text-2xl font-bold mb-4">
           {author ? "Edit Author" : "Add Author"}
         </h2>
-
         <form onSubmit={handleSubmit}>
           <input
             className="border rounded w-full p-2 mb-4"
@@ -46,14 +43,12 @@ function AuthorForm({ author, onClose, onSuccess }) {
             onChange={(e) => setName(e.target.value)}
             required
           />
-
           <div className="flex gap-3">
             <button
               className="bg-blue-600 text-white px-4 py-2 rounded"
             >
               Save
             </button>
-
             <button
               type="button"
               onClick={onClose}

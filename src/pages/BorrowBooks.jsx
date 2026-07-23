@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
-
 import { getBooks } from "../api/books";
 import {
   borrowBook,
   getMyBorrowedBooks,
   returnBook,
 } from "../api/borrow";
-
 import BorrowCard from "../components/BorrowCard";
 
 function BorrowBooks() {
   const [availableBooks, setAvailableBooks] = useState([]);
   const [borrowedBooks, setBorrowedBooks] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -23,25 +20,19 @@ function BorrowBooks() {
   async function loadData() {
     try {
       setLoading(true);
-
       const booksResponse = await getBooks({
         available: true,
       });
-
       const borrowedResponse =
         await getMyBorrowedBooks();
-
       const books = Array.isArray(booksResponse)
         ? booksResponse
         : booksResponse.results || [];
-
       const borrowed = Array.isArray(borrowedResponse)
         ? borrowedResponse
         : borrowedResponse.results || [];
-
       setAvailableBooks(books);
       setBorrowedBooks(borrowed);
-
       setError("");
     } catch (err) {
       console.error(err);
@@ -54,13 +45,10 @@ function BorrowBooks() {
   async function handleBorrow(bookId) {
     try {
       await borrowBook(bookId);
-
       alert("Book borrowed successfully.");
-
       loadData();
     } catch (err) {
       console.error(err);
-
       if (err.response?.data) {
         alert(JSON.stringify(err.response.data));
       } else {
@@ -73,14 +61,10 @@ function BorrowBooks() {
     const confirmed = window.confirm(
       "Return this book?"
     );
-
     if (!confirmed) return;
-
     try {
       await returnBook(id);
-
       alert("Book returned successfully.");
-
       loadData();
     } catch (err) {
       console.error(err);
@@ -110,17 +94,13 @@ function BorrowBooks() {
 
   return (
     <div className="max-w-7xl mx-auto p-8">
-
       <h1 className="text-4xl font-bold mb-8">
         Borrow Books
       </h1>
-
       <section className="mb-14">
-
         <h2 className="text-2xl font-semibold mb-6">
           Available Books
         </h2>
-
         {availableBooks.length === 0 ? (
           <p className="text-gray-600">
             No books are currently available.
@@ -137,15 +117,11 @@ function BorrowBooks() {
             ))}
           </div>
         )}
-
       </section>
-
       <section>
-
         <h2 className="text-2xl font-semibold mb-6">
           My Borrowed Books
         </h2>
-
         {borrowedBooks.length === 0 ? (
           <p className="text-gray-600">
             You have not borrowed any books.
@@ -162,9 +138,7 @@ function BorrowBooks() {
             ))}
           </div>
         )}
-
       </section>
-
     </div>
   );
 }

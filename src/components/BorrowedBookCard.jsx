@@ -4,12 +4,10 @@ function BorrowedBookCard({ record, onReturn }) {
       <h2 className="text-xl font-bold mb-2">
         {record.book_title}
       </h2>
-
       <p className="text-gray-700">
         <strong>Borrowed:</strong>{" "}
         {new Date(record.borrow_date).toLocaleDateString()}
       </p>
-
       <button
         onClick={() => onReturn(record.id)}
         className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition"

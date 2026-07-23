@@ -4,7 +4,6 @@ export async function borrowBook(bookId) {
   const response = await api.post("/borrow/", {
     book: bookId,
   });
-
   return response.data;
 }
 

@@ -23,19 +23,15 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
-
     try {
       await register(form);
     } catch (err) {
       console.error(err);
-
       if (err.response?.data) {
         const errors = Object.values(err.response.data)
           .flat()
           .join(" ");
-
         setError(errors);
       } else {
         setError("Registration failed.");
@@ -52,13 +48,11 @@ function Register() {
         <h1 className="text-3xl font-bold mb-6 text-center">
           Register
         </h1>
-
         {error && (
           <p className="text-red-600 mb-4">
             {error}
           </p>
         )}
-
         <input
           name="username"
           placeholder="Username"
@@ -67,7 +61,6 @@ function Register() {
           onChange={handleChange}
           required
         />
-
         <input
           type="email"
           name="email"
@@ -77,7 +70,6 @@ function Register() {
           onChange={handleChange}
           required
         />
-
         <input
           type="password"
           name="password"
@@ -87,7 +79,6 @@ function Register() {
           onChange={handleChange}
           required
         />
-
         <input
           type="password"
           name="confirm_password"
@@ -97,14 +88,12 @@ function Register() {
           onChange={handleChange}
           required
         />
-
         <button
           type="submit"
           className="bg-green-600 hover:bg-green-700 text-white w-full p-2 rounded"
         >
           Register
         </button>
-
         <p className="text-center mt-4">
           Already have an account?{" "}
           <Link

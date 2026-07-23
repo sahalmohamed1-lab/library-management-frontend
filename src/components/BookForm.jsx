@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { createBook, updateBook } from "../api/books";
 import { getAuthors } from "../api/authors";
 import { getCategories } from "../api/categories";
@@ -9,7 +8,6 @@ function BookForm({ book, onClose, onSuccess }) {
   const [isbn, setIsbn] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
-
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -30,7 +28,6 @@ function BookForm({ book, onClose, onSuccess }) {
     try {
       const authorData = await getAuthors();
       const categoryData = await getCategories();
-
       setAuthors(authorData);
       setCategories(categoryData);
     } catch (err) {
@@ -40,21 +37,18 @@ function BookForm({ book, onClose, onSuccess }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     const payload = {
       title,
       isbn,
       author,
       category,
     };
-
     try {
       if (book) {
         await updateBook(book.id, payload);
       } else {
         await createBook(payload);
       }
-
       onSuccess();
       onClose();
     } catch (err) {
@@ -66,11 +60,9 @@ function BookForm({ book, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-
         <h2 className="text-2xl font-bold mb-4">
           {book ? "Edit Book" : "Add Book"}
         </h2>
-
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
@@ -82,7 +74,6 @@ function BookForm({ book, onClose, onSuccess }) {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-
           <input
             className="border rounded w-full p-2"
             placeholder="ISBN"
@@ -90,7 +81,6 @@ function BookForm({ book, onClose, onSuccess }) {
             onChange={(e) => setIsbn(e.target.value)}
             required
           />
-
           <select
             className="border rounded w-full p-2"
             value={author}
@@ -98,7 +88,6 @@ function BookForm({ book, onClose, onSuccess }) {
             required
           >
             <option value="">Select Author</option>
-
             {authors.map((author) => (
               <option
                 key={author.id}
@@ -108,7 +97,6 @@ function BookForm({ book, onClose, onSuccess }) {
               </option>
             ))}
           </select>
-
           <select
             className="border rounded w-full p-2"
             value={category}
@@ -116,7 +104,6 @@ function BookForm({ book, onClose, onSuccess }) {
             required
           >
             <option value="">Select Category</option>
-
             {categories.map((category) => (
               <option
                 key={category.id}
@@ -126,7 +113,6 @@ function BookForm({ book, onClose, onSuccess }) {
               </option>
             ))}
           </select>
-
           <div className="flex gap-3">
             <button
               type="submit"
@@ -134,7 +120,6 @@ function BookForm({ book, onClose, onSuccess }) {
             >
               Save
             </button>
-
             <button
               type="button"
               onClick={onClose}
@@ -144,7 +129,6 @@ function BookForm({ book, onClose, onSuccess }) {
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );

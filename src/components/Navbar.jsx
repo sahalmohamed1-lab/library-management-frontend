@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
   const { user, logout } = useAuth();
-
   if (!user) return null;
 
   const isAdmin = user.is_staff || user.is_superuser;
@@ -14,7 +13,6 @@ function Navbar() {
         <h1 className="text-2xl font-bold">
           Library Management System
         </h1>
-
         <div className="flex items-center gap-6">
           {isAdmin && (
             <NavLink
@@ -26,7 +24,6 @@ function Navbar() {
               Dashboard
             </NavLink>
           )}
-
           <NavLink
             to="/books"
             className={({ isActive }) =>
@@ -35,7 +32,6 @@ function Navbar() {
           >
             Books
           </NavLink>
-
           {isAdmin && (
             <>
               <NavLink
@@ -46,7 +42,6 @@ function Navbar() {
               >
                 Authors
               </NavLink>
-
               <NavLink
                 to="/categories"
                 className={({ isActive }) =>
@@ -57,7 +52,6 @@ function Navbar() {
               </NavLink>
             </>
           )}
-
           <NavLink
             to="/borrow"
             className={({ isActive }) =>
@@ -67,12 +61,10 @@ function Navbar() {
             Borrow
           </NavLink>
         </div>
-
         <div className="flex items-center gap-4">
           <span className="text-sm">
             Welcome, <strong>{user.username}</strong>
           </span>
-
           <button
             onClick={logout}
             className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition"

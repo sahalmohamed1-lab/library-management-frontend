@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-
 import {
   getCategories,
   deleteCategory,
 } from "../api/categories";
-
 import CategoryCard from "../components/CategoryCard";
 import CategoryForm from "../components/CategoryForm";
-
 import { useAuth } from "../context/AuthContext";
 
 function Categories() {
@@ -27,9 +24,7 @@ function Categories() {
   async function loadCategories() {
     try {
       setLoading(true);
-
       const data = await getCategories();
-
       if (Array.isArray(data)) {
         setCategories(data);
       } else if (Array.isArray(data.results)) {
@@ -59,9 +54,7 @@ function Categories() {
     const confirmed = window.confirm(
       "Delete this category?"
     );
-
     if (!confirmed) return;
-
     try {
       await deleteCategory(id);
       loadCategories();
@@ -83,13 +76,10 @@ function Categories() {
 
   return (
     <div className="max-w-6xl mx-auto p-8">
-
       <div className="flex justify-between items-center mb-8">
-
         <h1 className="text-4xl font-bold">
           Categories
         </h1>
-
         {isAdmin && (
           <button
             onClick={handleAdd}
@@ -98,9 +88,7 @@ function Categories() {
             Add Category
           </button>
         )}
-
       </div>
-
       {categories.length === 0 ? (
         <p>No categories found.</p>
       ) : (
@@ -116,7 +104,6 @@ function Categories() {
           ))}
         </div>
       )}
-
       {showForm && (
         <CategoryForm
           category={selectedCategory}
@@ -124,7 +111,6 @@ function Categories() {
           onSuccess={loadCategories}
         />
       )}
-
     </div>
   );
 }

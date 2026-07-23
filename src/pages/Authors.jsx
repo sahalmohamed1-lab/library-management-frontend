@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-
 import {
   deleteAuthor,
   getAuthors,
 } from "../api/authors";
-
 import AuthorCard from "../components/AuthorCard";
 import AuthorForm from "../components/AuthorForm";
-
 import { useAuth } from "../context/AuthContext";
 
 function Authors() {
@@ -47,9 +44,7 @@ function Authors() {
     const confirmed = window.confirm(
       "Delete this author?"
     );
-
     if (!confirmed) return;
-
     try {
       await deleteAuthor(id);
       loadAuthors();
@@ -61,12 +56,10 @@ function Authors() {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">
           Authors
         </h1>
-
         {isAdmin && (
           <button
             onClick={handleAdd}
@@ -76,7 +69,6 @@ function Authors() {
           </button>
         )}
       </div>
-
       <div className="space-y-4">
         {authors.length === 0 ? (
           <p>No authors found.</p>
@@ -92,7 +84,6 @@ function Authors() {
           ))
         )}
       </div>
-
       {showForm && (
         <AuthorForm
           author={selectedAuthor}

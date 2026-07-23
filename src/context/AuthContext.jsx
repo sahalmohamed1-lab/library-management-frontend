@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import api from "../api/axios";
 import { getProfile } from "../api/auth";
 
@@ -8,7 +7,6 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,21 +16,17 @@ export function AuthProvider({ children }) {
 
   async function loadUser() {
     const token = localStorage.getItem("access");
-
     if (!token) {
       setLoading(false);
       return;
     }
-
     try {
       const profile = await getProfile();
       setUser(profile);
     } catch (err) {
       console.error(err);
-
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-
       setUser(null);
     } finally {
       setLoading(false);
@@ -44,14 +38,10 @@ export function AuthProvider({ children }) {
       username,
       password,
     });
-
     localStorage.setItem("access", response.data.access);
     localStorage.setItem("refresh", response.data.refresh);
-
     const profile = await getProfile();
-
     setUser(profile);
-
     if (profile.is_staff) {
       navigate("/dashboard");
     } else {
@@ -61,7 +51,6 @@ export function AuthProvider({ children }) {
 
   async function register(userData) {
     await api.post("/auth/register/", userData);
-
     await login(
       userData.username,
       userData.password
@@ -71,9 +60,7 @@ export function AuthProvider({ children }) {
   function logout() {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
-
     setUser(null);
-
     navigate("/");
   }
 

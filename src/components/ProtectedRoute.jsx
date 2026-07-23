@@ -6,7 +6,6 @@ function ProtectedRoute({
   adminOnly = false,
 }) {
   const { user, loading } = useAuth();
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -16,15 +15,12 @@ function ProtectedRoute({
       </div>
     );
   }
-
   if (!user) {
     return <Navigate to="/" replace />;
   }
-
   if (adminOnly && !user.is_staff) {
     return <Navigate to="/books" replace />;
   }
-
   return children;
 }
 
