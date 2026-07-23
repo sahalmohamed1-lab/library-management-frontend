@@ -1,77 +1,106 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+
+import {
+  deleteAuthor,
+  getAuthors,
+} from "../api/authors";
+
 import AuthorCard from "../components/AuthorCard";
+import AuthorForm from "../components/AuthorForm";
+
+import { useAuth } from "../context/AuthContext";
 
 function Authors() {
+  const { user } = useAuth();
+
+  const isAdmin = user?.is_staff || user?.is_superuser;
+
   const [authors, setAuthors] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    fetchAuthors();
+    loadAuthors();
   }, []);
 
-  async function fetchAuthors() {
+  async function loadAuthors() {
     try {
-      setLoading(true);
-
-      const response = await api.get("/authors/");
-
-      if (Array.isArray(response.data)) {
-        setAuthors(response.data);
-      } else if (Array.isArray(response.data.results)) {
-        setAuthors(response.data.results);
-      } else {
-        setAuthors([]);
-      }
-
-      setError("");
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load authors.");
-    } finally {
-      setLoading(false);
+      const data = await getAuthors();
+      setAuthors(data);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to load authors.");
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <h2 className="text-2xl font-semibold">
-          Loading authors...
-        </h2>
-      </div>
-    );
+  function handleAdd() {
+    setSelectedAuthor(null);
+    setShowForm(true);
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <h2 className="text-2xl text-red-600">
-          {error}
-        </h2>
-      </div>
+  function handleEdit(author) {
+    setSelectedAuthor(author);
+    setShowForm(true);
+  }
+
+  async function handleDelete(id) {
+    const confirmed = window.confirm(
+      "Delete this author?"
     );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteAuthor(id);
+      loadAuthors();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete author.");
+    }
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-8">
-        Authors
-      </h1>
+    <div className="max-w-5xl mx-auto p-6">
 
-      {authors.length === 0 ? (
-        <p>No authors found.</p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {authors.map((author) => (
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">
+          Authors
+        </h1>
+
+        {isAdmin && (
+          <button
+            onClick={handleAdd}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          >
+            Add Author
+          </button>
+        )}
+      </div>
+
+      <div className="space-y-4">
+        {authors.length === 0 ? (
+          <p>No authors found.</p>
+        ) : (
+          authors.map((author) => (
             <AuthorCard
               key={author.id}
               author={author}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              isAdmin={isAdmin}
             />
-          ))}
-        </div>
+          ))
+        )}
+      </div>
+
+      {showForm && (
+        <AuthorForm
+          author={selectedAuthor}
+          onClose={() => setShowForm(false)}
+          onSuccess={loadAuthors}
+        />
       )}
+
     </div>
   );
 }
