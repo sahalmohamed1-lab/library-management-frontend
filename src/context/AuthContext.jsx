@@ -52,7 +52,11 @@ export function AuthProvider({ children }) {
 
     setUser(profile);
 
-    navigate("/dashboard");
+    if (profile.is_staff) {
+      navigate("/dashboard");
+    } else {
+      navigate("/books");
+    }
   }
 
   async function register(userData) {

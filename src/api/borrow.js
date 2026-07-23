@@ -8,12 +8,12 @@ export async function borrowBook(bookId) {
   return response.data;
 }
 
-export async function returnBook(recordId) {
-  const response = await api.post(`/borrow/return/${recordId}/`);
+export async function getMyBorrowedBooks() {
+  const response = await api.get("/borrow/my-books/");
   return response.data;
 }
 
-export async function getMyBorrowedBooks() {
-  const response = await api.get("/borrow/my-books/");
-  return response.data.results || response.data;
+export async function returnBook(id) {
+  const response = await api.post(`/borrow/return/${id}/`);
+  return response.data;
 }

@@ -1,22 +1,20 @@
 import api from "./axios";
 
-export async function getBooks() {
-  const response = await api.get("/books/");
-  return response.data.results || response.data;
-}
+export async function getBooks(filters = {}) {
+  const response = await api.get("/books/", {
+    params: filters,
+  });
 
-export async function getBook(id) {
-  const response = await api.get(`/books/${id}/`);
   return response.data;
 }
 
-export async function createBook(book) {
-  const response = await api.post("/books/", book);
+export async function createBook(data) {
+  const response = await api.post("/books/", data);
   return response.data;
 }
 
-export async function updateBook(id, book) {
-  const response = await api.put(`/books/${id}/`, book);
+export async function updateBook(id, data) {
+  const response = await api.put(`/books/${id}/`, data);
   return response.data;
 }
 

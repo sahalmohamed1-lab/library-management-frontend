@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
-import BorrowBookCard from "../components/BorrowBookCard";
-import BorrowedBookCard from "../components/BorrowedBookCard";
+
+import { getBooks } from "../api/books";
+import {
+  borrowBook,
+  getMyBorrowedBooks,
+  returnBook,
+} from "../api/borrow";
+
+import BorrowCard from "../components/BorrowCard";
 
 function BorrowBooks() {
-  const [books, setBooks] = useState([]);
-  const [borrowed, setBorrowed] = useState([]);
+  const [availableBooks, setAvailableBooks] = useState([]);
+  const [borrowedBooks, setBorrowedBooks] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadData();
@@ -16,52 +24,67 @@ function BorrowBooks() {
     try {
       setLoading(true);
 
-      const [booksRes, borrowedRes] = await Promise.all([
-        api.get("/books/"),
-        api.get("/borrow/my-books/"),
-      ]);
+      const booksResponse = await getBooks({
+        available: true,
+      });
 
-      const bookData = booksRes.data.results || booksRes.data;
-      const borrowedData = borrowedRes.data.results || borrowedRes.data;
+      const borrowedResponse =
+        await getMyBorrowedBooks();
 
-      setBooks(bookData);
-      setBorrowed(borrowedData);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load data.");
+      const books = Array.isArray(booksResponse)
+        ? booksResponse
+        : booksResponse.results || [];
+
+      const borrowed = Array.isArray(borrowedResponse)
+        ? borrowedResponse
+        : borrowedResponse.results || [];
+
+      setAvailableBooks(books);
+      setBorrowedBooks(borrowed);
+
+      setError("");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load borrow information.");
     } finally {
       setLoading(false);
     }
   }
 
-  async function borrowBook(bookId) {
+  async function handleBorrow(bookId) {
     try {
-      await api.post("/borrow/", {
-        book: bookId,
-      });
+      await borrowBook(bookId);
 
       alert("Book borrowed successfully.");
-      loadData();
-    } catch (error) {
-      console.error(error);
 
-      alert(
-        error.response?.data?.book ||
-          error.response?.data?.detail ||
-          "Unable to borrow this book."
-      );
+      loadData();
+    } catch (err) {
+      console.error(err);
+
+      if (err.response?.data) {
+        alert(JSON.stringify(err.response.data));
+      } else {
+        alert("Failed to borrow book.");
+      }
     }
   }
 
-  async function returnBook(recordId) {
+  async function handleReturn(id) {
+    const confirmed = window.confirm(
+      "Return this book?"
+    );
+
+    if (!confirmed) return;
+
     try {
-      await api.post(`/borrow/return/${recordId}/`);
+      await returnBook(id);
 
       alert("Book returned successfully.");
+
       loadData();
-    } catch (error) {
-      console.error(error);
-      alert("Unable to return book.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to return book.");
     }
   }
 
@@ -75,57 +98,73 @@ function BorrowBooks() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <h2 className="text-2xl text-red-600">
+          {error}
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-8">
+
       <h1 className="text-4xl font-bold mb-8">
         Borrow Books
       </h1>
 
-      {/* Available Books */}
-      <h2 className="text-2xl font-semibold mb-5">
-        Available Books
-      </h2>
+      <section className="mb-14">
 
-      {books.filter((book) => book.available).length === 0 ? (
-        <p className="text-gray-600 mb-10">
-          No books are currently available.
-        </p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
-          {books
-            .filter((book) => book.available)
-            .map((book) => (
-              <BorrowBookCard
+        <h2 className="text-2xl font-semibold mb-6">
+          Available Books
+        </h2>
+
+        {availableBooks.length === 0 ? (
+          <p className="text-gray-600">
+            No books are currently available.
+          </p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {availableBooks.map((book) => (
+              <BorrowCard
                 key={book.id}
-                book={book}
-                onBorrow={borrowBook}
+                item={book}
+                borrowed={false}
+                onBorrow={handleBorrow}
               />
             ))}
-        </div>
-      )}
+          </div>
+        )}
 
-      <hr className="my-10" />
+      </section>
 
-      {/* Borrowed Books */}
-      <h2 className="text-2xl font-semibold mb-5">
-        My Borrowed Books
-      </h2>
+      <section>
 
-      {borrowed.length === 0 ? (
-        <p className="text-gray-600">
-          You haven't borrowed any books yet.
-        </p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {borrowed.map((record) => (
-            <BorrowedBookCard
-              key={record.id}
-              record={record}
-              onReturn={returnBook}
-            />
-          ))}
-        </div>
-      )}
+        <h2 className="text-2xl font-semibold mb-6">
+          My Borrowed Books
+        </h2>
+
+        {borrowedBooks.length === 0 ? (
+          <p className="text-gray-600">
+            You have not borrowed any books.
+          </p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {borrowedBooks.map((borrow) => (
+              <BorrowCard
+                key={borrow.id}
+                item={borrow}
+                borrowed={true}
+                onReturn={handleReturn}
+              />
+            ))}
+          </div>
+        )}
+
+      </section>
+
     </div>
   );
 }
