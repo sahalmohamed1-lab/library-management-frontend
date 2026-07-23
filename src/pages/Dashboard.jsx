@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
-import StatCard from "../components/StatCard";
+
+import { getDashboardStats } from "../api/dashboard";
+import DashboardCard from "../components/DashboardCard";
 
 function Dashboard() {
-  const [stats, setStats] = useState({
-    totalBooks: 0,
-    availableBooks: 0,
-    authors: 0,
-    categories: 0,
-    borrowedBooks: 0,
-  });
-
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,46 +13,11 @@ function Dashboard() {
 
   async function loadDashboard() {
     try {
-      setLoading(true);
-
-      const [
-        booksRes,
-        availableRes,
-        authorsRes,
-        categoriesRes,
-        borrowedRes,
-      ] = await Promise.all([
-        api.get("/books/"),
-        api.get("/books/?available=true"),
-        api.get("/authors/"),
-        api.get("/categories/"),
-        api.get("/borrow/my-books/"),
-      ]);
-
-      const books =
-        booksRes.data.results || booksRes.data;
-
-      const availableBooks =
-        availableRes.data.results || availableRes.data;
-
-      const authors =
-        authorsRes.data.results || authorsRes.data;
-
-      const categories =
-        categoriesRes.data.results || categoriesRes.data;
-
-      const borrowed =
-        borrowedRes.data.results || borrowedRes.data;
-
-      setStats({
-        totalBooks: books.length,
-        availableBooks: availableBooks.length,
-        authors: authors.length,
-        categories: categories.length,
-        borrowedBooks: borrowed.length,
-      });
+      const data = await getDashboardStats();
+      setStats(data);
     } catch (error) {
       console.error(error);
+      alert("Failed to load dashboard.");
     } finally {
       setLoading(false);
     }
@@ -66,58 +25,53 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <h2 className="text-2xl font-semibold">
-          Loading dashboard...
-        </h2>
+      <div className="p-8">
+        Loading dashboard...
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-10">
-        Dashboard
+    <div className="p-8">
+
+      <h1 className="text-3xl font-bold mb-8">
+        Admin Dashboard
       </h1>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard
-          title="Total Books"
-          value={stats.totalBooks}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <DashboardCard
+          title="Books"
+          value={stats.books}
         />
 
-        <StatCard
-          title="Available Books"
-          value={stats.availableBooks}
-        />
-
-        <StatCard
+        <DashboardCard
           title="Authors"
           value={stats.authors}
         />
 
-        <StatCard
+        <DashboardCard
           title="Categories"
           value={stats.categories}
         />
 
-        <StatCard
-          title="My Borrowed Books"
-          value={stats.borrowedBooks}
+        <DashboardCard
+          title="Users"
+          value={stats.users}
         />
+
+        <DashboardCard
+          title="Borrowed Books"
+          value={stats.borrowed_books}
+        />
+
+        <DashboardCard
+          title="Available Books"
+          value={stats.available_books}
+        />
+
       </div>
 
-      <div className="mt-12 bg-white shadow rounded-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">
-          Welcome to the Library Management System
-        </h2>
-
-        <p className="text-gray-600">
-          Use the navigation bar to browse books,
-          manage authors and categories, or borrow
-          and return books.
-        </p>
-      </div>
     </div>
   );
 }

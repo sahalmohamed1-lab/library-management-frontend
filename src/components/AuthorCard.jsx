@@ -1,20 +1,27 @@
-function AuthorCard({ author }) {
+function AuthorCard({ author, onEdit, onDelete, isAdmin }) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
-      <h2 className="text-xl font-bold text-gray-800">
-        {author.name}
-      </h2>
+    <div className="bg-white shadow rounded-lg p-4 flex justify-between items-center">
+      <div>
+        <h2 className="text-lg font-semibold">{author.name}</h2>
+      </div>
 
-      <p className="text-gray-500 mt-2">
-        Author ID: {author.id}
-      </p>
+      {isAdmin && (
+        <div className="flex gap-2">
+          <button
+            onClick={() => onEdit(author)}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+          >
+            Edit
+          </button>
 
-      <p className="text-sm text-gray-400 mt-4">
-        Created:
-      </p>
-      <p className="text-sm">
-        {new Date(author.created_at).toLocaleString()}
-      </p>
+          <button
+            onClick={() => onDelete(author.id)}
+            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
