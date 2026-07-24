@@ -28,27 +28,42 @@ function BookForm({ book, onClose, onSuccess }) {
     try {
       const authorData = await getAuthors();
       const categoryData = await getCategories();
-      setAuthors(authorData);
-      setCategories(categoryData);
+
+      setAuthors(
+        Array.isArray(authorData)
+          ? authorData
+          : authorData.results || []
+      );
+
+      setCategories(
+        Array.isArray(categoryData)
+          ? categoryData
+          : categoryData.results || []
+      );
     } catch (err) {
       console.error(err);
+      setAuthors([]);
+      setCategories([]);
     }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     const payload = {
       title,
       isbn,
       author,
       category,
     };
+
     try {
       if (book) {
         await updateBook(book.id, payload);
       } else {
         await createBook(payload);
       }
+
       onSuccess();
       onClose();
     } catch (err) {
@@ -63,24 +78,26 @@ function BookForm({ book, onClose, onSuccess }) {
         <h2 className="text-2xl font-bold mb-4">
           {book ? "Edit Book" : "Add Book"}
         </h2>
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-        >
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             className="border rounded w-full p-2"
+            type="text"
             placeholder="Book Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+
           <input
             className="border rounded w-full p-2"
+            type="text"
             placeholder="ISBN"
             value={isbn}
             onChange={(e) => setIsbn(e.target.value)}
             required
           />
+
           <select
             className="border rounded w-full p-2"
             value={author}
@@ -89,14 +106,12 @@ function BookForm({ book, onClose, onSuccess }) {
           >
             <option value="">Select Author</option>
             {authors.map((author) => (
-              <option
-                key={author.id}
-                value={author.id}
-              >
+              <option key={author.id} value={author.id}>
                 {author.name}
               </option>
             ))}
           </select>
+
           <select
             className="border rounded w-full p-2"
             value={category}
@@ -105,25 +120,24 @@ function BookForm({ book, onClose, onSuccess }) {
           >
             <option value="">Select Category</option>
             {categories.map((category) => (
-              <option
-                key={category.id}
-                value={category.id}
-              >
+              <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))}
           </select>
+
           <div className="flex gap-3">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
             >
               Save
             </button>
+
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
             >
               Cancel
             </button>
